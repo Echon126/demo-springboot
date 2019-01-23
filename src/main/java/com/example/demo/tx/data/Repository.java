@@ -20,7 +20,7 @@ public class Repository {
 
     public static AuxiliaryTable createAuxiliaryTable(){
         AuxiliaryTable auxiliaryTable = new AuxiliaryTable();
-        auxiliaryTable.setCity(null);
+        auxiliaryTable.setCity("xxxxxx");
         auxiliaryTable.setCode(1);
 
         return auxiliaryTable;

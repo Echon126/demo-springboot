@@ -10,6 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,8 +35,44 @@ public class DemoApplicationTests {
     @Autowired
     TxService txService;
 
+
     @Test
     public void testTx() throws Exception {
         txService.createData();
+    }
+
+    @Autowired
+    RestTemplate restTemplate;
+    private static final int count = 100;
+    private CountDownLatch countDownLatch = new CountDownLatch(count);
+    private static final String URL_REQUEST = "http://127.0.0.1:8090/api/tx";
+
+
+    @Test
+    public void TestThread() throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(count);
+        for (int i = 0; i < count; i++) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("当前线程:" + Thread.currentThread().getName() + "准备....");
+                    restTemplate.getForObject(URL_REQUEST,String.class);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }finally {
+                        System.out.println("当前线程:" + Thread.currentThread().getName() + "已就绪...., countdown减一.");
+                        countDownLatch.countDown();
+                    }
+                }
+            });
+        }
+        System.out.println("主线程:" + Thread.currentThread().getName() + "等待其他线程，同时到达某一状态，即countdown为0....");
+        countDownLatch.await();
+        System.out.println("主线程:" + Thread.currentThread().getName() + "等待结束, 开始运行...");
+
+        executorService.shutdown();
+
     }
 }
