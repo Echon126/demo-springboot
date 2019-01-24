@@ -1,0 +1,43 @@
+DynamicAdvisedInterceptor  AOP包
+
+
+
+AbstractProtocol
+
+NioEndpoint
+
+SocketProcessorBase
+
+
+Cglib 
+
+getCallbacks
+
+DynamicAdvisedInterceptor 
+
+intercept 
+
+invokeWithinTransaction
+
+spring AOP代理机制
+1.默认使用CGLib模式CglibAopProxy 生成代理类的子类。 执行调用内部类DynamicAdvicedInteceptor的invoke方法
+2.JdkDynamicAopProxy  通过使用接口进行代理 。调用自身的invoke方法
+
+SpringAOP 事务管理注意点
+1.@Transactional 只能应用到 public 方法才有效
+只有@Transactional 注解应用到 public 方法，才能进行事务管理。
+这是因为在使用 Spring AOP 代理时，Spring 在调用在图 1 中的 TransactionInterceptor 在目标方法执行前后进行拦截之前，
+DynamicAdvisedInterceptor（CglibAopProxy 的内部类）的的 intercept 方法或 JdkDynamicAopProxy 的 invoke 方法会间接调用 
+AbstractFallbackTransactionAttributeSource（Spring 通过这个类获取表 1. @Transactional 注解的事务属性配置属性信息）
+的 computeTransactionAttribute 方法 
+
+2.避免 Spring 的 AOP 的自调用问题
+
+在 Spring 的 AOP 代理下，只有目标方法由外部调用，目标方法才由 Spring 生成的代理对象来管理，这会造成自调用问题。
+若同一类中的其他没有@Transactional 注解的方法内部调用有@Transactional 注解的方法，有@Transactional 注解的方法的事务被忽略，不会发生回滚。
+
+
+
+上面的两个问题@Transactional 注解只应用到 public 方法和自调用问题，是由于使用 Spring AOP 代理造成的。为解决这两个问题，使用 AspectJ 取代 Spring AOP 代理。
+
+

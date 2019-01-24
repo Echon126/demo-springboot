@@ -2,16 +2,21 @@ package com.example.demo;
 
 
 import com.example.demo.aop.Dao;
+import com.example.demo.aop.proxy.LinkManDao;
 import com.example.demo.tx.service.TxService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
+import org.springframework.cglib.proxy.MethodProxy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -74,5 +79,30 @@ public class DemoApplicationTests {
 
         executorService.shutdown();
 
+    }
+
+
+
+
+    @Test
+    public void TestProxy(){
+        final LinkManDao linkManDao = new LinkManDao();
+        // 创建cglib核心对象
+        Enhancer enhancer = new Enhancer();
+        // 设置父类
+        enhancer.setSuperclass(linkManDao.getClass());
+        // 设置回调
+        enhancer.setCallback(new MethodInterceptor(){
+            @Override
+            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                System.out.println("记录日志");
+                Object result = method.invoke(linkManDao, objects);
+                return result;
+            }
+        });
+
+        // 创建代理对象
+        LinkManDao proxy = (LinkManDao) enhancer.create();
+        proxy.save();
     }
 }
