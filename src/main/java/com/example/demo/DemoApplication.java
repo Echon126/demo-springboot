@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class DemoApplication {
     public static void main(String[] args) {
+        System.out.println("启动springboot服务器------------------");
         SpringApplication.run(DemoApplication.class, args);
     }
 

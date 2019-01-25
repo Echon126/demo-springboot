@@ -16,7 +16,8 @@ public class TxController {
     TxService txService;
 
     @GetMapping("/api/tx")
-    public void testTx() throws Exception {
+    public String testTx() throws Exception {
         txService.createData();
+       return "执行成功";
     }
 }

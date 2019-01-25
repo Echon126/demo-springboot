@@ -41,3 +41,48 @@ AbstractFallbackTransactionAttributeSource（Spring 通过这个类获取表 1. 
 上面的两个问题@Transactional 注解只应用到 public 方法和自调用问题，是由于使用 Spring AOP 代理造成的。为解决这两个问题，使用 AspectJ 取代 Spring AOP 代理。
 
 
+
+
+SpringAOP 代理的核心关键类
+
+1.代理的实现
+AopProxy基础数据接口
+CglibAopProxy 基于CGLib的代理实现
+JdkDynamicAopProxy  基于JDKDynamic的代理实现
+
+2.创建代理
+AopProxyFactory 数据接口中定义的抽象方法c reateAopProxy 来创建代理对象
+DefaultAopProxyFactory  AopProxyFactory Aop代理工厂接口的直接实现类，也是唯一实现类，
+
+public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {
+		if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
+			Class<?> targetClass = config.getTargetClass();
+			if (targetClass == null) {
+				throw new AopConfigException("TargetSource cannot determine target class: " +
+						"Either an interface or a target is required for proxy creation.");
+			}
+			if (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) {
+				return new JdkDynamicAopProxy(config);
+			}
+			return new ObjenesisCglibAopProxy(config);
+		}
+		else {
+			return new JdkDynamicAopProxy(config);
+		}
+	}
+
+
+CGLIB 通过 Enhancer 生成代理类的子类，并使用 DynamicAdvisedInterceptor 封装了增强方法
+再把 DynamicAdvisedInterceptor 实现放入到callbacks 中就是通过对callbacks 的封装来完成aop的实现。
+
+
+
+
+
+loadFactoryNames SpringBoot 启动的关键方法，通过该类加载配置类，
+默认的配置全部位于
+spring-boot-autoconfigure/META-INF/spring.factoryies
+其他与springboot无缝集成的配置位于自己项目配置类下的
+/META-INF/spring.factoryies
+如：mybatis的自动配置类
+mybatis-spring-boot-autoconfigure/META-INFO/spring.factoryies
