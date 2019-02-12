@@ -1,5 +1,7 @@
 package com.example.demo.data;
 
+import org.apache.poi.poifs.crypt.HashAlgorithm;
+
 import java.util.Random;
 
 /**
@@ -11,22 +13,31 @@ public class InternalClass {
     public InternalClass() {
     }
 
-    protected  static class DispatcherServletConfiguration{
-       static{
-           System.out.println("static code ");
-       }
+    protected static class DispatcherServletConfiguration {
+        static {
+            System.out.println("static code ");
+        }
 
-        public static void out(){
+        public static void out() {
             System.out.println("neibu class");
         }
     }
 
     public static void main(String[] args) {
-        Random random = new Random();
-        System.out.println(random.nextInt());
-        System.out.println(random.nextInt(
-                10
-        ));
+        int sum = 0, n = 100;
+        sum = (1 + n) * n / 2;
+        System.out.println(sum);
+
     }
+
+    private static void aynalize() {
+        int[] array = {'A', 'A', 'A', 'C'};
+        for (int i = 0; i < array.length; i++) {
+
+        }
+
+
+    }
+
 
 }
