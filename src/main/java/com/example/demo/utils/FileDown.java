@@ -10,13 +10,19 @@ import java.io.*;
  */
 public class FileDown {
 
-    public static void downloadWrite(HttpServletRequest request, HttpServletResponse response, String filename) {
+    public static void downloadWrite(HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     String url,
+                                     String filename
+                                    ) {
 
         filename.replace("file:///", "");
-        File file = new File(filename);
+        File file = new File(String.format("%s%s", url, filename));
         response.setContentType("application/x-www-form-urlencoded; charset=UTF-8");
-        response.addHeader("Content-Disposition", "attachment;filename=" + filename.substring(filename.lastIndexOf("/") + 1));
-        response.setContentLength((int) file.length());
+        System.out.println(filename.substring(filename.lastIndexOf("/") + 1));
+        //response.addHeader("Content-Disposition", "attachment;filename=" + filename.substring(filename.lastIndexOf("/") + 1));
+        response.addHeader("Content-Disposition", "attachment; filename=\"" + filename.substring(filename.lastIndexOf("/") + 1) + "\"");
+        //response.setContentLength((int) file.length());
         response.setCharacterEncoding("utf-8");
         try (InputStream is = new BufferedInputStream(new FileInputStream(file));
              OutputStream out = new BufferedOutputStream(response.getOutputStream())) {

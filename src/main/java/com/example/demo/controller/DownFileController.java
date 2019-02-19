@@ -59,21 +59,21 @@ public class DownFileController {
     public void downLoadFile(HttpServletRequest requst,
                              HttpServletResponse response) {
         String file = this.systemService.systemUser();
-        FileDown.downloadWrite(requst, response, file);
+        //FileDown.downloadWrite(requst, response, file);
     }
 
     @Autowired
     ApplicationConfiguration app;
 
+    @Autowired
+    BuilderConfiguration configuration;
 
     @RequestMapping(value = "/customLoad", method = RequestMethod.GET)
     public void CustomDownLoadFile(HttpServletRequest requst,
                                    HttpServletResponse response) throws IOException, URISyntaxException {
         String path = this.getClass().getClassLoader().getResource("").toURI().getPath() + "forerunner";
-        File sourceFile = ResourceUtils.getFile(app.getModelUrl());
-        BuilderConfiguration configuration = new BuilderConfiguration(app.getDownDir(), sourceFile.getAbsolutePath());
-        String filename = configuration.builderUtils("systemUser", this.systemService.systemUserData());
-        FileDown.downloadWrite(requst, response, app.getDownDir() + filename);
+        String filename = this.configuration.builderUtils("systemUser", this.systemService.systemUserData());
+        FileDown.downloadWrite(requst, response, app.getDownDir(), filename);
     }
 
 }
