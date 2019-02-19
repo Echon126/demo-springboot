@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forerunner table="表一"  alias="介质注入统计表">
+    <fields>
+        <field name="id" type="String" alias="id" exSort="0" exAlias="用户ID"></field>
+        <field name="username" type="String" alias="username" exSort="1" exAlias="用户名称"></field>
+        <field name="name" type="String" alias="name" exSort="2" exAlias="用户名"></field>
+        <field name="deptId" type="String" alias="deptId" exSort="3" exAlias="部门ID"></field>
+    </fields>
+</forerunner>

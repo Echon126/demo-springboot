@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forerunner table="" alias="介质注入详情汇报">
+    <fields>
+        <field name="mtype1" type="String" alias="mtype1" exSort="0" exAlias="节目类型"></field>
+        <field name="MID" type="String" alias="MID" exSort="1" exAlias="MID"></field>
+        <field name="cnname" type="String" alias="cnname" exSort="2" exAlias="节目名称"></field>
+        <field name="sid" type="String" alias="sid" exSort="3" exAlias="分集"></field>
+    </fields>
+</forerunner>

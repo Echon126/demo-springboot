@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forerunner table="" alias="介质注入统计表">
+    <fields>
+        <field name="mtype1" type="String" alias="mtype1" exSort="0" exAlias="节目类型"></field>
+        <field name="coderate" type="String" alias="coderate" exSort="1" exAlias="码流"></field>
+        <field name="count" type="String" alias="count" exSort="2" exAlias="集数"></field>
+        <field name="msize" type="String" alias="msize" exSort="3" exAlias="体积(G)"></field>
+        <field name="duration" type="String" alias="duration" exSort="4" exAlias="时长(时)"></field>
+    </fields>
+</forerunner>

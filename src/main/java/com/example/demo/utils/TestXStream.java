@@ -3,6 +3,11 @@ package com.example.demo.utils;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 /**
  * @author admin
  * @date 2019-2-13 15:10
@@ -40,10 +45,19 @@ public class TestXStream {
 
 
     public static void main(String[] args) {
-        // 转换装配
-        XStream xStream = new XStream(new DomDriver());
-        System.out.println(xStream.fromXML(PERSON_XML).toString());
-        System.out.println(xStream.fromXML(PERSON_XML).toString());
-        System.out.println(xStream.fromXML(PERSON_XML).toString());
+        GetYesterDay();
+    }
+
+    public static  void GetYesterDay(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = sdf.format(new Date());
+        System.out.println(date);
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DATE,1);
+        String date1= sdf.format(calendar.getTime());
+        System.out.println(date1);
+
+
     }
 }
