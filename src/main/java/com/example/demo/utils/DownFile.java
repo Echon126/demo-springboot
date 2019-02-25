@@ -1,5 +1,6 @@
 package com.example.demo.utils;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.web.servlet.view.document.AbstractXlsxStreamingView;
@@ -39,16 +40,12 @@ public class DownFile extends AbstractXlsxStreamingView {
         font.setColor(HSSFColor.WHITE.index);
         style.setFont(font);
         Row header = sheet.createRow(0);
-        header.createCell(0).setCellValue("姓名");
-        header.getCell(0).setCellStyle(style);
-        header.createCell(1).setCellValue("性别");
-        header.getCell(1).setCellStyle(style);
-        header.createCell(2).setCellValue("手机号");
-        header.getCell(2).setCellStyle(style);
-        header.createCell(3).setCellValue("身份证号");
-        header.getCell(3).setCellStyle(style);
-        header.createCell(4).setCellValue("银行卡号");
-        header.getCell(4).setCellStyle(style);
+
+        for (int i = 0; i < titles.length; i++) {
+            header.createCell(i).setCellValue(titles[i]);
+            header.getCell(i).setCellStyle(style);
+        }
+
         int rowCount = 1;
         for (ExportMemberVo user : list) {
             Row userRow = sheet.createRow(rowCount++);

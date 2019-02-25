@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forerunner table="" alias="">
+	<fields>
+		<field name="mid" type="string" imSort="0"></field>
+		<field name="fid" type="String" imSort="1"></field>
+	</fields>	
+</forerunner>

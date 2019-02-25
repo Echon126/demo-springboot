@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author admin
@@ -34,5 +36,11 @@ public class Captcha {
     public String getCode(HttpServletRequest request) {
         KaptchaExtend kaptchaExtend = new KaptchaExtend();
         return kaptchaExtend.getGeneratedKey(request);
+    }
+    @RequestMapping(value = "/api/str")
+    public String getTestAop() {
+        List<String> al = new ArrayList<String>();
+        al.get(0);
+       return "wenjie";
     }
 }

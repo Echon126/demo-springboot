@@ -12,7 +12,7 @@ server:
 #spring的配置
 spring:
   aop:
-    auto: false
+    auto: true
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
@@ -33,6 +33,10 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/bootdo?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
     username: root
     password: newpassword
+
+
+  main:
+    banner-mode: 0
 
 
 

@@ -33,6 +33,7 @@ public class DemoApplicationTests {
     @Test
     public void TestAop() {
         ApplicationContext ac = new ClassPathXmlApplicationContext("classpath:/aop.xml");
+
         Dao dao = (Dao) ac.getBean("daoImpl");
         dao.select();
     }

@@ -8,7 +8,10 @@
         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <bean id="daoImpl" class="com.example.demo.aop.DaoImpl" />
-    <bean id="timeHandler" class="com.example.demo.aop.TimeHandler" />
+    <bean id="timeHandler" class="com.example.demo.aop.TimeHandler" >
+        <property name="name" value="${jdbc.driverClassName}" />
+    </bean>
+
 
     <aop:config proxy-target-class="true">
         <aop:aspect id="time" ref="timeHandler">

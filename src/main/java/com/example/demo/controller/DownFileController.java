@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.configuration.ApplicationConfiguration;
+import com.example.demo.entity.DataMap;
 import com.example.demo.service.SystemService;
 import com.example.demo.utils.DownFile;
 import com.example.demo.utils.ExportMemberVo;
@@ -9,6 +10,7 @@ import com.wen.excel.configuration.BuilderConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,6 +51,7 @@ public class DownFileController {
         map.put("members", list);
         DownFile excelView = new DownFile();
         excelView.setFileName("魅力城市xxxxxx");
+        excelView.setTitles(new String[]{"姓名","性别","手机号","身份证号","银行卡号"});
         return new ModelAndView(excelView, map);
     }
 
@@ -74,6 +77,15 @@ public class DownFileController {
         String path = this.getClass().getClassLoader().getResource("").toURI().getPath() + "forerunner";
         String filename = this.configuration.builderUtils("systemUser", this.systemService.systemUserData());
         FileDown.downloadWrite(requst, response, app.getDownDir(), filename);
+    }
+
+
+    @GetMapping("/importExcel")
+    public void importExcel() throws Exception {
+        DataMap ddmm = new DataMap();
+        ddmm.put("minfo-pathFileName","test.xlsx");
+        ddmm.put("minfo-path","E:\\test\\test.xlsx");
+        this.systemService.systemUserExcel(ddmm);
     }
 
 }

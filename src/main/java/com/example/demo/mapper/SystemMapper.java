@@ -1,6 +1,7 @@
 package com.example.demo.mapper;
 
 import com.example.demo.entity.DataMap;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -19,4 +20,8 @@ public interface SystemMapper {
 
     @Select("select user_id id,username,name,dept_id  deptId from sys_user")
     List<Map<String, Object>> systemUserData();
+
+
+    @Insert("insert into movie(mid,fid) values(#{mid},#{fid})")
+    boolean insetMovie(DataMap map) throws Exception;
 }

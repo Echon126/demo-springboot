@@ -3,15 +3,16 @@ package com.example.demo.utils;
 import com.example.demo.entity.DataMap;
 import com.example.demo.entity.ForerunnerConfig;
 import com.example.demo.entity.ForerunnerField;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -21,6 +22,13 @@ import java.util.*;
 public class ExcelUtil {
     private final static Logger logger = LoggerFactory.getLogger(ExcelUtil.class);
 
+
+    /**
+     * 根据模板导出Excel
+     * @param forerunnerConfig
+     * @param list
+     * @return
+     */
     public static String exportExcelInDataMap(ForerunnerConfig forerunnerConfig, List<DataMap> list) {
         String url = forerunnerConfig.getClass().getClassLoader().getResource("").getPath();
         String title = forerunnerConfig.getName() + "--" + new Date().getTime() + ".xls";
@@ -136,6 +144,91 @@ public class ExcelUtil {
         return out;
 
     }
+
+
+    /**
+     * 导入Excel，根据模板导出Excel
+     *
+     * @param ddmm
+     * @param fieldMap
+     * @return
+     */
+    public static List<DataMap> importExcel(DataMap ddmm, Map<String, ForerunnerField> fieldMap) {
+        String type = ddmm.get("minfo-pathFileName").toString();
+        type = type.substring(type.lastIndexOf(".") + 1);
+        List<DataMap> dataMapList = new ArrayList<>();
+        Map<Integer, String> hashMap = new HashMap<>();
+        File file = null;
+
+        file = new File(ddmm.get("minfo-path").toString());
+        Iterator<Map.Entry<String, ForerunnerField>> iter = fieldMap.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, ForerunnerField> field = iter.next();
+            if (field.getValue().getImSort() == null) continue;
+            hashMap.put(field.getValue().getImSort(), field.getKey());
+        }
+        Workbook book = null;
+        try (FileInputStream in = new FileInputStream(file)) {
+            if ("xlsx".equals(type)) {
+                book = new XSSFWorkbook(in);
+            } else {
+                book = new HSSFWorkbook(in);
+            }
+
+            Sheet sheet = book.getSheetAt(0);
+            int first = sheet.getFirstRowNum();
+            Iterator<Row> rowIter = sheet.rowIterator();
+            //如果第1行的行号不是0，第1行为没任何信息行，手动空出标题行
+            if (first == 0) {
+                rowIter.next();
+            }
+            while (rowIter.hasNext()) {
+                // 标题下的第一行
+                Row rown = rowIter.next(); //行
+                int rowNum = rown.getRowNum();
+                Iterator<Cell> cellbody = rown.cellIterator();//格
+                DataMap dm = new DataMap();
+                while (cellbody.hasNext()) {
+                    Cell cell = cellbody.next();
+                    if (hashMap.containsKey(cell.getColumnIndex())) {
+                        if ((cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC || cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) && HSSFDateUtil.isCellDateFormatted(cell)) {
+                            double d = cell.getNumericCellValue();
+                            Date date = HSSFDateUtil.getJavaDate(d);
+                            dm.put(hashMap.get(cell.getColumnIndex()), DateUtil.getDateString(date, "yyyy-MM-dd HH:mm:ss"));
+                        } else {
+                            cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+                            dm.put(hashMap.get(cell.getColumnIndex()), cell.getStringCellValue());
+                        }
+                    }
+                }
+                if (!checkMap(dm)) {
+                    continue;
+                }
+                dm.put("rowIndex", rowNum + 1);
+                dataMapList.add(dm);
+            }
+            return dataMapList;
+        } catch (IOException e) {
+            logger.error("导出Excel时出错，错误信息为:{}" + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //去除没有值的行
+    public static boolean checkMap(DataMap map) {
+        Iterator<?> iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            @SuppressWarnings("unchecked")
+            Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iter.next();
+            if (entry.getValue() != null && entry.getValue().toString() != "") {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
 }
 
 
