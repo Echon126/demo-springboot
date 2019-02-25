@@ -1,9 +1,8 @@
 package com.example.demo.mapper;
 
 import com.example.demo.entity.DataMap;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.example.demo.provider.DaoProvider;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Map;
@@ -24,4 +23,38 @@ public interface SystemMapper {
 
     @Insert("insert into movie(mid,fid) values(#{mid},#{fid})")
     boolean insetMovie(DataMap map) throws Exception;
+
+
+    /**
+     * 批量插入数据
+     *
+     * @param list
+     * @return
+     */
+
+    @Insert({
+            "<script>",
+            "insert into movie(mid,fid)",
+            "values",
+            "<foreach  item='item' index='index' collection='list' separator=','>",
+            "(#{item.mid},#{item.fid})",
+            "</foreach>",
+            "</script>"
+    })
+    int insertCollectionList(List<DataMap> list);
+
+
+    @InsertProvider(type = DaoProvider.class, method = "insertImportExcel")
+    int insertCollectionListProvider(List<DataMap> list);
+
+    @Update({
+            "<script>",
+            "<foreach item='value' index='key' collection='pushResult' separator=';'>",
+            "update movie set mid=#{mid} ,fid=#{fid} where mid=#{mid}",
+            "</foreach>",
+            "</script>"
+    })
+    int updataByMsgId(Map<String, Map<String, String>> pushResult);
+
+
 }
