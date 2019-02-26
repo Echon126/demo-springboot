@@ -280,13 +280,6 @@ public class ForerunnerCacheManager {
         if (e == null) {
             return null;
         }
-        List<Attribute> ss=e.getAttributes();
-        for(Attribute s:ss){
-            System.out.println(s.getValue());
-            System.out.println(s.getName());
-            System.out.println(s.getNamespace());
-
-        }
         String value = e.getAttributeValue(attr);
         if (StringUtils.isEmpty(value) || value.trim().length() == 0) {
             return null;
