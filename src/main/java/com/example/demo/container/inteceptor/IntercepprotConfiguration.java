@@ -13,7 +13,7 @@ public class IntercepprotConfiguration  implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TokenInterceptor()).addPathPatterns("/*");
-        registry.addInterceptor(new CustomeInterceptor()).addPathPatterns("/*");
+        //registry.addInterceptor(new CustomeInterceptor()).addPathPatterns("/*");
     }
 
 }

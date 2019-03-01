@@ -135,6 +135,7 @@
             <version>3.14</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
+        <!--XStream是一个用于将对象序列化为xml以及将xml生成对象的库，通过它可以非常方便的做对象与xml(json等其他格式)之间的转换-->
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
@@ -171,6 +172,18 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.8.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
         </dependency>
 
         <dependency>
