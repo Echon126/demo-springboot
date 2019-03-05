@@ -3,6 +3,7 @@ package com.example.demo;
 
 import com.example.demo.aop.Dao;
 import com.example.demo.aop.proxy.LinkManDao;
+import com.example.demo.configuration.AppPropertySource;
 import com.example.demo.tx.service.TxService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,8 @@ import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.env.PropertyResolver;
+import org.springframework.core.env.PropertySourcesPropertyResolver;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -62,12 +65,12 @@ public class DemoApplicationTests {
                 @Override
                 public void run() {
                     System.out.println("当前线程:" + Thread.currentThread().getName() + "准备....");
-                    restTemplate.getForObject(URL_REQUEST,String.class);
+                    restTemplate.getForObject(URL_REQUEST, String.class);
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    }finally {
+                    } finally {
                         System.out.println("当前线程:" + Thread.currentThread().getName() + "已就绪...., countdown减一.");
                         countDownLatch.countDown();
                     }
@@ -83,17 +86,15 @@ public class DemoApplicationTests {
     }
 
 
-
-
     @Test
-    public void TestProxy(){
+    public void TestProxy() {
         final LinkManDao linkManDao = new LinkManDao();
         // 创建cglib核心对象
         Enhancer enhancer = new Enhancer();
         // 设置父类
         enhancer.setSuperclass(linkManDao.getClass());
         // 设置回调
-        enhancer.setCallback(new MethodInterceptor(){
+        enhancer.setCallback(new MethodInterceptor() {
             @Override
             public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
                 System.out.println("记录日志");
@@ -105,5 +106,16 @@ public class DemoApplicationTests {
         // 创建代理对象
         LinkManDao proxy = (LinkManDao) enhancer.create();
         proxy.save();
+    }
+
+    @Autowired
+    AppPropertySource appPropertySource;
+
+    @Test
+    public void testPropertySources() {
+        PropertyResolver propertyResolver = new PropertySourcesPropertyResolver(appPropertySource.propertyConfiguration().getAppliedPropertySources());
+        String ss = propertyResolver.getProperty("interface_head");
+        System.out.println(ss);
+
     }
 }

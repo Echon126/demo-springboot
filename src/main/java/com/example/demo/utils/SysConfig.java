@@ -56,4 +56,20 @@ public class SysConfig {
         getConfig("ddddd");
     }
 
+
+    //TODO PropertyPlaceholderConfigurer 属性配置器
+    /**
+     *
+     * <bean id="propertyConfigurer"
+     * 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+     * 		<property name="locations">
+     * 			<list>
+     * 				<value>classpath*:systemConfig.properties</value>
+     * 			</list>
+     * 		</property>
+     * 	</bean>
+     *
+     *
+     */
+
 }

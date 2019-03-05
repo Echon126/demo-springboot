@@ -1,14 +1,14 @@
 package com.example.demo.utils.example;
 
 import com.example.demo.aop.Dao;
+import com.example.demo.entity.Content;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author admin
@@ -96,10 +96,6 @@ public class Demo {
 
     }
 
-    public static void main(String[] args) {
-        ListUtils();
-    }
-
 
     /**
      * 比较两个List 是否完全相同，包括类型和在list中的排序
@@ -121,8 +117,49 @@ public class Demo {
         }
 
         return bl;
+    }
+
+
+    public static String getOrredingIdUUID() {
+        int machineId = new Random(10).nextInt(8) + 1;
+        log.info(machineId);
+        int hashCodeV = UUID.randomUUID().toString().hashCode();
+        if (hashCodeV < 0) {
+            hashCodeV = -hashCodeV;
+        }
+
+        return machineId + String.format("%015d", hashCodeV);
+    }
+
+    public void IteratorMap(Map<String, String> map) {
+        //TODO 001
+        map.forEach((key, value) -> {
+            System.out.println("key--" + key + "----value----" + value);
+        });
+
+        //TODO 002
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> entry = it.next();
+            System.out.println("key----" + entry.getKey() + "------value-----" + entry.getValue());
+        }
+
+        //TODO 003
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            System.out.println("key----" + entry.getKey() + "------value-----" + entry.getValue());
+        }
+    }
+
+
+    public static void main(String[] args) {
+
+        Content c = new Content("0001", "desc");
+        Content d = new Content("0001", "desc");
+        System.out.println(c == d);
+        System.out.println(c.equals(d));
 
     }
+
 }
 
 
