@@ -1,7 +1,7 @@
 package com.example.demo.utils.example;
 
 import com.example.demo.aop.Dao;
-import com.example.demo.entity.Content;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -151,12 +151,36 @@ public class Demo {
     }
 
 
-    public static void main(String[] args) {
 
-        Content c = new Content("0001", "desc");
-        Content d = new Content("0001", "desc");
-        System.out.println(c == d);
-        System.out.println(c.equals(d));
+
+    public   String ListUtil(){
+        return new ToStringBuilder(this).append("att1", "att1")
+                .append("att2", "att2")
+                .append("att3", "att3")
+                .append("super", super.toString()).toString();
+    }
+
+    public static void main(String[] args) {
+        List<String>list = new ArrayList<String>(){{
+            add("0001");
+            add("0002");
+            add("0003");
+            add("0001");
+        }};
+
+
+        list.forEach(x->{
+            System.out.println(x);
+        });
+        System.out.println("-------------------");
+        Set<String> set = new HashSet<String>();
+        set.addAll(list);
+        List<String> newList = new ArrayList<String>();
+        newList.addAll(set);
+
+        newList.forEach(x->{
+            System.out.println("去重 "+x);
+        });
 
     }
 
