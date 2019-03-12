@@ -1,6 +1,7 @@
 package com.example.demo.utils.example;
 
 import com.example.demo.aop.Dao;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * @author admin
@@ -151,17 +153,15 @@ public class Demo {
     }
 
 
-
-
-    public   String ListUtil(){
+    public String ListUtil() {
         return new ToStringBuilder(this).append("att1", "att1")
                 .append("att2", "att2")
                 .append("att3", "att3")
                 .append("super", super.toString()).toString();
     }
 
-    public static void main(String[] args) {
-        List<String>list = new ArrayList<String>(){{
+    public static void main001(String[] args) {
+        List<String> list = new ArrayList<String>() {{
             add("0001");
             add("0002");
             add("0003");
@@ -169,7 +169,7 @@ public class Demo {
         }};
 
 
-        list.forEach(x->{
+        list.forEach(x -> {
             System.out.println(x);
         });
         System.out.println("-------------------");
@@ -178,11 +178,78 @@ public class Demo {
         List<String> newList = new ArrayList<String>();
         newList.addAll(set);
 
-        newList.forEach(x->{
-            System.out.println("去重 "+x);
+        newList.forEach(x -> {
+            System.out.println("去重 " + x);
         });
 
     }
+
+    public static boolean getInfo() throws InterruptedException, ExecutionException, TimeoutException {
+        Boolean result = false;
+        final ExecutorService executorService = Executors.newFixedThreadPool(1);
+        Callable<Boolean> call = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return currentInfo();
+            }
+        };
+
+        Future<Boolean> future = executorService.submit(call);
+        result = future.get(120, TimeUnit.SECONDS);
+        return result;
+
+    }
+
+    public static boolean currentInfo() {
+        return true;
+    }
+
+
+    public static String uniCode(String str) {
+        StringBuffer sb = new StringBuffer();
+        char[] sources = str.toCharArray();
+        String unicode = null;
+
+        for (int i = 0; i < sources.length; i++) {
+            unicode = Integer.toHexString(sources[i]);
+
+            if (unicode.length() <= 2) {
+                unicode = "00" + unicode;
+            }
+            sb.append("\\u" + unicode);
+
+        }
+        return sb.toString();
+    }
+
+
+    public static void main(String[] args) {
+      /*  String actors = "埃兹拉·米勒|蒂尔达·斯文顿|约翰·C·赖利|Siobhan Fallon|Ashley Gerasimovich";
+       String s =StringEscapeUtils.unescapeJava("\\u57c3\\u5179\\u62c9\\u00b7\\u7c73\\u52d2\\u007c\\u8482\\u5c14\\u8fbe\\u00b7\\u65af\\u6587\\u987f\\u007c\\u7ea6\\u7ff0\\u00b7\\u0043\\u00b7\\u8d56\\u5229\\u007c\\u0053\\u0069\\u006f\\u0062\\u0068\\u0061\\u006e\\u0020\\u0046\\u0061\\u006c\\u006c\\u006f\\u006e\\u007c\\u0041\\u0073\\u0068\\u006c\\u0065\\u0079\\u0020\\u0047\\u0065\\u0072\\u0061\\u0073\\u0069\\u006d\\u006f\\u0076\\u0069\\u0063\\u0068");
+
+       System.out.println(s);*/
+
+
+        //求最长字符串的程序
+
+        List<String> list = Arrays.asList("Aaa", "Abbasdasda", "Axcvwewrw");
+
+        //0001 方法1
+        OptionalInt length = list.stream().filter(s -> s.startsWith("A")).mapToInt(String::length).max();
+        System.out.println(length.getAsInt());
+
+        //0002 方法二
+        int lengthMax = 0;
+        for (String str : list) {
+            if (str.startsWith("A")) {
+                int len = str.length();
+                lengthMax = Math.max(len, lengthMax);
+            }
+        }
+        System.out.println(lengthMax);
+
+    }
+
 
 }
 

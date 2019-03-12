@@ -12,13 +12,31 @@ public class AcceptMethod {
         System.out.println("prinlt value : " + str);
     }
 
-    public static void main(String[] args) {
-        List<String> al = Arrays.asList("a", "b", "c", "d");
-        for (String a : al) {
-            printValue(a);
+    /* public static void main(String[] args) {
+         List<String> al = Arrays.asList("a", "b", "c", "d");
+         for (String a : al) {
+             printValue(a);
+         }
+         al.forEach(x -> {
+             AcceptMethod.printValue(x);
+         });
+     }*/
+
+
+    private static List<String> list = Arrays.asList("aaaa", "bbbb", "ccccc", "ddddddd");
+
+    public static Simple getStrValue() {
+        Simple simple = new Simple();
+        for (String value : list) {
+            simple.setValueMap(value, value);
         }
-        al.forEach(x -> {
-            AcceptMethod.printValue(x);
-        });
+        return simple;
+    }
+
+    public static String getStr(String key){
+        return getStrValue().getValue(key);
+    }
+    public static void main(String[] args) {
+        System.out.println(getStr("aaaa"));
     }
 }
