@@ -45,6 +45,7 @@ public class SystemService {
 
             if (!errorlist.isEmpty()) {
                 //TODO 错误信息保存或者处理
+
             }
             //TODO 数据库入库可以批量插入，值提交一次事务，提高入口效率。
             //System.out.println("----------开始插入数据---------");

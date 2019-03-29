@@ -1,16 +1,20 @@
 package com.example.demo.utils.example;
 
+import com.alibaba.fastjson.JSON;
 import com.example.demo.aop.Dao;
-import org.apache.commons.lang3.StringEscapeUtils;
+import com.example.demo.utils.entity.Student;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * @author admin
@@ -62,9 +66,11 @@ public class Demo {
     }
 
 
-    private static SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final static SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    //比较两个List中的元素是否完全相同
     public static void ListUtils() {
+        long startTime = System.currentTimeMillis();
         List<String> list001 = new ArrayList<>();
         List<String> list002 = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
@@ -95,7 +101,7 @@ public class Demo {
         System.out.println("校验一千封试卷所需时间" + (System.currentTimeMillis() - start));
         System.out.println("比较次数 " + count);
 
-
+        System.out.println(dateformat.format(new Date(startTime)));
     }
 
 
@@ -121,7 +127,7 @@ public class Demo {
         return bl;
     }
 
-
+    //根据UUID获取唯一订单号
     public static String getOrredingIdUUID() {
         int machineId = new Random(10).nextInt(8) + 1;
         log.info(machineId);
@@ -133,6 +139,7 @@ public class Demo {
         return machineId + String.format("%015d", hashCodeV);
     }
 
+    // 遍历Map集合的常用方法
     public void IteratorMap(Map<String, String> map) {
         //TODO 001
         map.forEach((key, value) -> {
@@ -152,7 +159,7 @@ public class Demo {
         }
     }
 
-
+    //对象中数据输出方式，通过这种凡是可以避免++引起的内存溢出，
     public String ListUtil() {
         return new ToStringBuilder(this).append("att1", "att1")
                 .append("att2", "att2")
@@ -160,6 +167,7 @@ public class Demo {
                 .append("super", super.toString()).toString();
     }
 
+    //List中对象去重
     public static void main001(String[] args) {
         List<String> list = new ArrayList<String>() {{
             add("0001");
@@ -184,6 +192,7 @@ public class Demo {
 
     }
 
+    //有返回值的线程调用
     public static boolean getInfo() throws InterruptedException, ExecutionException, TimeoutException {
         Boolean result = false;
         final ExecutorService executorService = Executors.newFixedThreadPool(1);
@@ -197,7 +206,6 @@ public class Demo {
         Future<Boolean> future = executorService.submit(call);
         result = future.get(120, TimeUnit.SECONDS);
         return result;
-
     }
 
     public static boolean currentInfo() {
@@ -205,6 +213,7 @@ public class Demo {
     }
 
 
+    //unicode 转化为中文和字符串转化为unicode
     public static String uniCode(String str) {
         StringBuffer sb = new StringBuffer();
         char[] sources = str.toCharArray();
@@ -222,18 +231,8 @@ public class Demo {
         return sb.toString();
     }
 
-
-    public static void main(String[] args) {
-      /*  String actors = "埃兹拉·米勒|蒂尔达·斯文顿|约翰·C·赖利|Siobhan Fallon|Ashley Gerasimovich";
-       String s =StringEscapeUtils.unescapeJava("\\u57c3\\u5179\\u62c9\\u00b7\\u7c73\\u52d2\\u007c\\u8482\\u5c14\\u8fbe\\u00b7\\u65af\\u6587\\u987f\\u007c\\u7ea6\\u7ff0\\u00b7\\u0043\\u00b7\\u8d56\\u5229\\u007c\\u0053\\u0069\\u006f\\u0062\\u0068\\u0061\\u006e\\u0020\\u0046\\u0061\\u006c\\u006c\\u006f\\u006e\\u007c\\u0041\\u0073\\u0068\\u006c\\u0065\\u0079\\u0020\\u0047\\u0065\\u0072\\u0061\\u0073\\u0069\\u006d\\u006f\\u0076\\u0069\\u0063\\u0068");
-
-       System.out.println(s);*/
-
-
-        //求最长字符串的程序
-
-        List<String> list = Arrays.asList("Aaa", "Abbasdasda", "Axcvwewrw");
-
+    //求最长字符串的程序
+    public static int getStrLength(List<String> list) {
         //0001 方法1
         OptionalInt length = list.stream().filter(s -> s.startsWith("A")).mapToInt(String::length).max();
         System.out.println(length.getAsInt());
@@ -247,10 +246,188 @@ public class Demo {
             }
         }
         System.out.println(lengthMax);
+        return lengthMax;
+    }
+
+
+    public static void main0001(String[] args) throws InterruptedException {
+        System.out.println("使用线程池运行 Runable 任务");
+        ExecutorService threadPool = Executors.newFixedThreadPool(5);
+        List<AccumRunnable> tasks = new ArrayList<AccumRunnable>(10);
+        for (int i = 0; i < 10; i++) {
+            AccumRunnable task = new AccumRunnable(i * 10 + 1, (i + 1) * 10);
+            tasks.add(task);
+
+            threadPool.execute(task);// 让线程池执行任务 task
+        }
+        threadPool.shutdown(); // 向线程池发送关闭的指令，等到已经提交的任务都执行完毕之后，线程池会关闭
+        threadPool.awaitTermination(1, TimeUnit.HOURS); // 等待线程池关闭，等待的最大时间为 1 小时
+
+        int total = 0;
+        for (AccumRunnable task : tasks) {
+            total += task.getResult(); // 调用在 AccumRunnable 定义的 getResult 方法获得返回的结果
+        }
+
+        System.out.println("Total: " + total);
+
+        CountDownLatch();
+    }
+
+    //TODO CountDownLatch 用来控制一个线程等待多个线程。
+    //TODO 维护一个计数器，每次调用countDown时计数器的值减1，减到0的时候，那些因为调用 await()方法而在等待的线程将被唤醒。
+
+    public static void CountDownLatch() throws InterruptedException {
+        final int totalThread = 10;
+        CountDownLatch countDownLatch = new CountDownLatch(totalThread);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+
+        for (int i = 0; i < totalThread; i++) {
+            executorService.execute(() -> {
+                System.out.print("run.....");
+                countDownLatch.countDown();
+            });
+        }
+        countDownLatch.await();
+        System.out.println("end");
+        executorService.shutdown();
+    }
+
+
+    public static void main00002(String[] args) throws UnsupportedEncodingException {
+        /*String str = "hello world";
+        System.out.println(str.length());
+        byte[] bytes = str.getBytes();
+        for (byte b : bytes) {
+            System.out.println(b);
+        }
+        System.out.println(bytes);
+
+        String[] str001 = new String[]{"dddd", "sdfsdf"};
+        System.out.println(str001);*/
+       /* byte[] newBytes = new byte[2];
+        System.arraycopy(bytes,0,newBytes,0,2);
+        System.out.println(newBytes);
+        System.out.println(newBytes.length);
+        System.out.println(new String(newBytes));
+        System.out.println("---------------------------------");
+        char[] c = str.toCharArray();
+        for(int i=0;i<c.length;i++){
+            byte b = (byte) c[i];
+            System.out.println(b);
+           // System.out.println(Integer.valueOf(c[i]));
+
+        }
+        System.out.println(Integer.valueOf('h'));
+        System.out.println(new String(bytes,"ascii"));*/
+
+        char a = 'a';
+        byte b = 104;
+        int c = b;
+        float d = 10;
+        float f = a;
+        float g = b;
+        float m = c;
+        double sds = 100;
+
+        System.out.println(c);
+    }
+
+
+    private static final int COUNT_BITS = Integer.SIZE - 3;
+    private static final int CAPACITY = (1 << COUNT_BITS) - 1;
+
+    private static final int RUNNING = -1 << COUNT_BITS;
+
+
+    public static void main0003(String[] args) {
+        AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+        System.out.println(ctl.get());
+        System.out.println(CAPACITY);
+        System.out.println(workerCountOf(CAPACITY));
+
+        Retry();
+
+    }
+
+    private static int ctlOf(int rs, int wc) {
+        return rs | wc;
+    }
+
+    private static int workerCountOf(int c) {
+        return c & CAPACITY;
+    }
+
+    private static void Retry() {
+        //retry:
+        for (int i = 0; i < 10; i++) {
+            retry:
+            while (i == 5) {
+                continue retry;
+            }
+            System.out.print(i + " ");
+        }
+
 
     }
 
 
+    public static void main(String[] args) {
+        List<Student> list = new ArrayList<Student>();
+
+        list.add(new Student(001, "张三", 20));
+        list.add(new Student(0002, "lisi", 30));
+        list.add(null);
+
+        //集合防空
+        List<Student> newList = list.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        newList.forEach(x -> {
+            System.out.println(x);
+        });
+
+        //List convert Map
+        Map<Integer, Student> map = list.stream().filter(Objects::nonNull)
+                .collect(Collectors.toMap(Student::getId, s -> s));
+        System.out.println(JSON.toJSON(map));
+        System.out.println(map.get(1));
+
+    }
+
+
+    static final class AccumRunnable implements Runnable {
+        private final int begin;
+        private final int end;
+
+        private int result;
+
+        public AccumRunnable(int begin, int end) {
+            this.begin = begin;
+            this.end = end;
+        }
+
+        public void run() {
+            result = 0;
+            try {
+                for (int i = begin; i <= end; i++) {
+                    result += i;
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.printf("(%s) - 运行结束，结果为%d\n", Thread.currentThread().getName(), result);
+        }
+
+        public int getResult() {
+            return result;
+        }
+    }
+
 }
+
+
+
+
+
+
 
 
