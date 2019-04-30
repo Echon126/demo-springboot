@@ -1,7 +1,5 @@
 package com.example.demo.test;
 
-import com.sun.javaws.jnl.PropertyDesc;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -15,9 +13,9 @@ import java.lang.reflect.Method;
  */
 public class TestMain {
 
-    public static void main(String[] args) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
+  /*  public static void main(String[] args) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
         method2();
-    }
+    }*/
     //通过PropertyDescriptor创建属性的描述器
     public static  void method1() throws IntrospectionException, InvocationTargetException, IllegalAccessException {
         Student st = new Student();

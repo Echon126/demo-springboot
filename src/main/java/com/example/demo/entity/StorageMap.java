@@ -141,7 +141,7 @@ public class StorageMap extends HashMap<String, Object> {
 	}
 	/**
 	 * 当配置和字段的配置不存在的时候
-	 * @param value
+	 * @param
 	 */
 	public void configOrFiledToNull(String key, Object[] os){
 		int maxIndex = os.length-1;
